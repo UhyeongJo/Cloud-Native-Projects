@@ -12,26 +12,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    
     - name: Set up JDK 17
       uses: actions/setup-java@v1
       with:
         java-version: 17
+        
     - name: Build with Maven
       run: mvn -B package --file pom.xml -DskipTests
+      
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
+      
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
+      
     - name: Login to DockerHub
       uses: docker/login-action@v1 
       with:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
+        
     - name: Build and push
-      id: docker_build
-      uses: docker/build-push-action@v2
-      with:
-        push: true
-        tags: uh2959/cn-action:latest
-    - name: Image digest
-      run: echo ${{ steps.docker_build.outputs.digest }}
+      env:
+        NAME: uh2959
+        REPO: cn-action
+      run:
+        docker build -t $REPO .
+        docker tag $REPO:latest $NAME/$REPO:latest
+        docker push $NAME/$REPO:latest
