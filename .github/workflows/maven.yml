@@ -32,6 +32,6 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: uh2959/:latest
+        tags: uh2959/cn-action:latest
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
